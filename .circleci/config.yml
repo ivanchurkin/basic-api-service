@@ -1,0 +1,16 @@
+version: 2
+jobs:
+  build:
+    docker: # use the docker executor type; machine and macos executors are also supported
+      - image: circleci/node:12.6 # the primary container, where your job's commands are run
+    steps:
+      - checkout # check out the code in the project directory
+      - run:
+          name: install-dependencies
+          command: npm install
+      - add_ssh_keys:
+          fingerprints:
+            - "93:37:56:7a:46:b1:1d:64:c5:2f:e7:35:2d:1e:57:7e"
+      - run:
+          name: digital-ocean
+          command: ssh -o "StrictHostKeyChecking no" circleci@churkin.org "cd /var/www/api.churkin.org; git pull; npm install; pm2 start /var/www/api.churkin.org/app.js"
