@@ -13,4 +13,4 @@ jobs:
             - "93:37:56:7a:46:b1:1d:64:c5:2f:e7:35:2d:1e:57:7e"
       - run:
           name: digital-ocean
-          command: ssh -o "StrictHostKeyChecking no" circleci@churkin.org "cd /var/www/api.churkin.org; git pull; npm install; pm2 start /var/www/api.churkin.org/app.js"
+          command: ssh -o "StrictHostKeyChecking no" circleci@churkin.org "cd /var/www/api.churkin.org; git pull; npm install; pm2 startOrRestart ecosystem.config.js"
