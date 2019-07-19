@@ -1,11 +1,18 @@
 const Koa = require('koa');
 const Router = require('@koa/router');
 const logger = require('koa-logger');
+const KoaPug = require('koa-pug');
+const bodyParser = require('koa-bodyparser');
 
 const app = new Koa();
+const koaPug = new KoaPug({
+  viewPath: './views',
+  noCache: true,
+  app
+});
 
 function onError(err, ctx) {
-  console.log(err, ctx);
+  console.log(err);
 }
 
 app.on('error', onError);
@@ -24,19 +31,22 @@ app.use(logger());
 
 app.use(errorHandler);
 
-const router = new Router();
-const routerDogs = new Router({
-  prefix: '/dogs'
-});
+app.use(bodyParser());
 
-require('./routes/basic')(router);
-require('./routes/dogs')(routerDogs);
+const db = require('./db');
 
-app.use(router.routes());
-app.use(router.allowedMethods());
+const routers = [
+  require('./routes/basic')(Router),
+  require('./routes/projects-api')(Router),
+  require('./routes/projects')(Router)
+];
 
-app.use(routerDogs.routes());
-app.use(routerDogs.allowedMethods());
+for (let i = 0, size = routers.length; i < size; i++) {
+  const router = routers[i];
+
+  app.use(router.routes());
+  app.use(router.allowedMethods());
+}
 
 const server = app.listen(3000);
 module.exports = server;

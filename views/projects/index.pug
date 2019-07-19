@@ -1,0 +1,23 @@
+extends ../layouts/base.pug
+
+block body
+  a.btn.btn-primary.mb-4(href="/projects/create") Добавить
+  table.table
+    thead
+      tr
+        th(scope="col") #
+        th(scope="col") ID
+        th(scope="col") Name
+        th(scope="col") Character
+        th.text-right(scope="col") Actions
+    tbody
+      each project, index in projects
+        tr
+          th(scope="row")= index + 1
+          td= project.id
+          td= project.name
+          td= project.character
+          td.text-right
+            a(href=`/projects/edit/${ project.id }`) E
+            | &nbsp;
+            a(href=`/projects/remove/${ project.id }`) D

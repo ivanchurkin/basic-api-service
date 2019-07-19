@@ -1,0 +1,12 @@
+extends ../layouts/base.pug
+
+block body
+  form(action="/projects/store" method="post")
+    input(name="_id", hidden, value=project._id)
+    .form-group
+      label(for="project-name") Name
+      input#project-name.form-control(type="text", aria-describedby="emailHelp", placeholder="Enter name", name="name", value=project.name)
+    .form-group
+      label(for="project-character") Character
+      input#project-character.form-control(type="text", placeholder="Enter character", name="character", value=project.character)
+    button.btn.btn-primary(type="submit") Update
