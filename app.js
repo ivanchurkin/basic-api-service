@@ -1,9 +1,12 @@
+const path = require('path');
 const Koa = require('koa');
 const Router = require('@koa/router');
-const logger = require('koa-logger');
+const KoaLogger = require('koa-logger');
 const KoaPug = require('koa-pug');
-const bodyParser = require('koa-bodyparser');
+const KoaBodyparser = require('koa-bodyparser');
+const KoaStaticCache = require('koa-static-cache');
 
+const db = require('./db');
 const app = new Koa();
 const koaPug = new KoaPug({
   viewPath: './views',
@@ -27,13 +30,14 @@ async function errorHandler(ctx, next) {
   }
 }
 
-app.use(logger());
-
+app.use(KoaLogger());
 app.use(errorHandler);
-
-app.use(bodyParser());
-
-const db = require('./db');
+app.use(KoaBodyparser());
+app.use(KoaStaticCache('public', {
+  maxAge: 365 * 24 * 60 * 60,
+  gzip: true,
+  usePrecompiledGzip: true,
+}));
 
 const routers = [
   require('./routes/basic')(Router),
